@@ -1,5 +1,12 @@
 const express = require('express')
+const morgan = require('morgan')
+morgan.token('data', (req) => {
+  if(req.method.toUpperCase() === 'POST') 
+    return JSON.stringify(req.body)
+})
+
 const app = express()
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :data'))
 app.use(express.json())
 
 let persons = [
@@ -25,12 +32,13 @@ let persons = [
   }
 ]
 
+
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
 
 app.get('/info', (request, response) => {
-  console.log(response.date)
   response.send(`Phonebook has info for ${persons.length}<br/><br/>${new Date()}`)
 })
 
@@ -59,7 +67,7 @@ app.post('/api/persons', (request, response) => {
 
 const PORT = 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+  // console.log(`Server running on port ${PORT}`)
 })
 
 
